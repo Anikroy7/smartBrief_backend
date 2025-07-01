@@ -25,17 +25,34 @@ const getAllSummariesFromDB = async (filter: any = {}) => {
   const summaries = await Summary.find(filter).sort({ createdAt: -1 });
   return summaries;
 };
+const getMySummariesFromDB = async (userId: string) => {
+  console.log('userId:', userId);
+  const summaries = await Summary.find({ user: userId }).sort({ createdAt: -1 });
+  return summaries;
+};
 
-const getSingleSummaryFromDB = async (id: string) => {
+const getSingleSummaryFromDB = async (userId: string, id: string) => {
   const summary = await Summary.findById(id);
+  if (!summary) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Summary not found');
+  }
+  if (summary.user.toString() !== userId) {
+    throw new AppError(httpStatus.FORBIDDEN, 'You are not authorized to update this summary');
+  }
   if (!summary) {
     throw new AppError(httpStatus.NOT_FOUND, 'Summary not found');
   }
   return summary;
 };
 
-const updateSummaryIntoDB = async (id: string, updateData: Partial<ISummary>) => {
-  console.log('Update Data:', updateData);
+const updateSummaryIntoDB = async (userId: string, id: string, updateData: Partial<ISummary>) => {
+  const summary = await Summary.findById(id);
+  if (!summary) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Summary not found');
+  }
+  if (summary.user.toString() !== userId) {
+    throw new AppError(httpStatus.FORBIDDEN, 'You are not authorized to update this summary');
+  }
   const updated = await Summary.findByIdAndUpdate(id, updateData, {
     new: true,
     runValidators: true,
@@ -46,7 +63,14 @@ const updateSummaryIntoDB = async (id: string, updateData: Partial<ISummary>) =>
   return updated;
 };
 
-const deleteSummaryIntoDB = async (id: string) => {
+const deleteSummaryIntoDB = async (userId: string, id: string) => {
+  const summary = await Summary.findById(id);
+  if (!summary) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Summary not found');
+  }
+  if (summary.user.toString() !== userId) {
+    throw new AppError(httpStatus.FORBIDDEN, 'You are not authorized to update this summary');
+  }
   const deleted = await Summary.findByIdAndDelete(id);
   if (!deleted) {
     throw new AppError(httpStatus.NOT_FOUND, 'Failed to delete summary');
@@ -60,5 +84,6 @@ export const SummaryServices = {
   createSummaryIntoDB,
   getSingleSummaryFromDB,
   updateSummaryIntoDB,
-  deleteSummaryIntoDB
+  deleteSummaryIntoDB,
+  getMySummariesFromDB
 };

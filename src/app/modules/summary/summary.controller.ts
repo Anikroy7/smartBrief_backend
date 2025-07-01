@@ -39,10 +39,21 @@ const getAllSummaries = catchAsync(async (req, res) => {
         data: summaries,
     });
 });
+const getMySummaries = catchAsync(async (req, res) => {
+    const userId = req?.user?.userId as string;
+    const summaries = await SummaryServices.getMySummariesFromDB(userId);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "My Summaries fetched successfully",
+        data: summaries,
+    });
+});
 
 const getSingleSummary = catchAsync(async (req, res) => {
     const { id } = req.params;
-    const summary = await SummaryServices.getSingleSummaryFromDB(id);
+    const userId = req?.user?.userId as string;
+    const summary = await SummaryServices.getSingleSummaryFromDB(userId,id);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -53,10 +64,11 @@ const getSingleSummary = catchAsync(async (req, res) => {
 
 const updateSummary = catchAsync(async (req, res) => {
     const { id } = req.params;
+    const userId = req?.user?.userId as string;
     const updateData = req.body;
     console.log('Update Data: controleler', updateData);
 
-    const updated = await SummaryServices.updateSummaryIntoDB(id, updateData);
+    const updated = await SummaryServices.updateSummaryIntoDB(userId, id, updateData);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -67,8 +79,8 @@ const updateSummary = catchAsync(async (req, res) => {
 
 const deleteSummary = catchAsync(async (req, res) => {
     const { id } = req.params;
-
-    const deleted = await SummaryServices.deleteSummaryIntoDB(id);
+    const userId = req?.user?.userId as string;
+    const deleted = await SummaryServices.deleteSummaryIntoDB(userId, id);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -84,5 +96,6 @@ export const SummaryControllers = {
     getAllSummaries,
     getSingleSummary,
     updateSummary,
-    deleteSummary
+    deleteSummary,
+    getMySummaries
 };
