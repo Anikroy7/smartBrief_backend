@@ -5,8 +5,9 @@ import globalErrorHandler from "./app/middlewares/globalErrorhandler";
 
 const app: Application = express();
 
+// Middlewares
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1/", router);
 

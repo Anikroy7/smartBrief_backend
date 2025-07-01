@@ -21,6 +21,44 @@ const createSummaryIntoDB = async (payload: ISummary) => {
   return newSummary;
 };
 
+const getAllSummariesFromDB = async (filter: any = {}) => {
+  const summaries = await Summary.find(filter).sort({ createdAt: -1 });
+  return summaries;
+};
+
+const getSingleSummaryFromDB = async (id: string) => {
+  const summary = await Summary.findById(id);
+  if (!summary) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Summary not found');
+  }
+  return summary;
+};
+
+const updateSummaryIntoDB = async (id: string, updateData: Partial<ISummary>) => {
+  console.log('Update Data:', updateData);
+  const updated = await Summary.findByIdAndUpdate(id, updateData, {
+    new: true,
+    runValidators: true,
+  });
+  if (!updated) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Failed to update summary');
+  }
+  return updated;
+};
+
+const deleteSummaryIntoDB = async (id: string) => {
+  const deleted = await Summary.findByIdAndDelete(id);
+  if (!deleted) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Failed to delete summary');
+  }
+  return deleted;
+};
+
+
 export const SummaryServices = {
+  getAllSummariesFromDB,
   createSummaryIntoDB,
+  getSingleSummaryFromDB,
+  updateSummaryIntoDB,
+  deleteSummaryIntoDB
 };
