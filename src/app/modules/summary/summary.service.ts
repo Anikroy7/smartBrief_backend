@@ -31,28 +31,16 @@ const getMySummariesFromDB = async (userId: string) => {
   return summaries;
 };
 
-const getSingleSummaryFromDB = async (userId: string, id: string) => {
+const getSingleSummaryFromDB = async (id: string) => {
   const summary = await Summary.findById(id);
-  if (!summary) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Summary not found');
-  }
-  if (summary.user.toString() !== userId) {
-    throw new AppError(httpStatus.FORBIDDEN, 'You are not authorized to update this summary');
-  }
   if (!summary) {
     throw new AppError(httpStatus.NOT_FOUND, 'Summary not found');
   }
   return summary;
 };
 
-const updateSummaryIntoDB = async (userId: string, id: string, updateData: Partial<ISummary>) => {
-  const summary = await Summary.findById(id);
-  if (!summary) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Summary not found');
-  }
-  if (summary.user.toString() !== userId) {
-    throw new AppError(httpStatus.FORBIDDEN, 'You are not authorized to update this summary');
-  }
+const updateSummaryIntoDB = async ( id: string, updateData: Partial<ISummary>) => {
+  
   const updated = await Summary.findByIdAndUpdate(id, updateData, {
     new: true,
     runValidators: true,
@@ -63,14 +51,8 @@ const updateSummaryIntoDB = async (userId: string, id: string, updateData: Parti
   return updated;
 };
 
-const deleteSummaryIntoDB = async (userId: string, id: string) => {
-  const summary = await Summary.findById(id);
-  if (!summary) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Summary not found');
-  }
-  if (summary.user.toString() !== userId) {
-    throw new AppError(httpStatus.FORBIDDEN, 'You are not authorized to update this summary');
-  }
+const deleteSummaryIntoDB = async (id: string) => {
+
   const deleted = await Summary.findByIdAndDelete(id);
   if (!deleted) {
     throw new AppError(httpStatus.NOT_FOUND, 'Failed to delete summary');

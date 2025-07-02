@@ -12,6 +12,34 @@ const createUserIntoDB = async (payload: IUser) => {
   return newUser;
 };
 
+
+const getAllUsersFromDB = async () => {
+  const users = await User.find({});
+  return users;
+};
+
+const getUserByIdFromDB = async (id: string) => {
+  const user = await User.findById(id);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+  return user;
+};
+
+const updateUserByIdIntoDB = async (id: string, payload: Partial<IUser>) => {
+  const updatedUser = await User.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
+  });
+  if (!updatedUser) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+  return updatedUser;
+};
+
 export const UserServices = {
   createUserIntoDB,
+  getAllUsersFromDB,
+  getUserByIdFromDB,
+  updateUserByIdIntoDB
 };

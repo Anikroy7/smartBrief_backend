@@ -53,7 +53,7 @@ const getMySummaries = catchAsync(async (req, res) => {
 const getSingleSummary = catchAsync(async (req, res) => {
     const { id } = req.params;
     const userId = req?.user?.userId as string;
-    const summary = await SummaryServices.getSingleSummaryFromDB(userId,id);
+    const summary = await SummaryServices.getSingleSummaryFromDB(id);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -64,11 +64,10 @@ const getSingleSummary = catchAsync(async (req, res) => {
 
 const updateSummary = catchAsync(async (req, res) => {
     const { id } = req.params;
-    const userId = req?.user?.userId as string;
     const updateData = req.body;
     console.log('Update Data: controleler', updateData);
 
-    const updated = await SummaryServices.updateSummaryIntoDB(userId, id, updateData);
+    const updated = await SummaryServices.updateSummaryIntoDB( id, updateData);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -80,7 +79,7 @@ const updateSummary = catchAsync(async (req, res) => {
 const deleteSummary = catchAsync(async (req, res) => {
     const { id } = req.params;
     const userId = req?.user?.userId as string;
-    const deleted = await SummaryServices.deleteSummaryIntoDB(userId, id);
+    const deleted = await SummaryServices.deleteSummaryIntoDB(id);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
