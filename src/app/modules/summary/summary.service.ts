@@ -3,8 +3,17 @@ import AppError from "../../errors/AppError";
 import { ISummary } from "./summary.interface";
 import Summary from "./summary.model";
 import { summaryQueue } from "../../queue/summary/summary.queue";
+import { generateCacheKey } from "./summary.utils";
+import redis from "../../redis/redisClient";
 
 const createSummaryIntoDB = async (payload: ISummary) => {
+  const cacheKey = generateCacheKey(payload.user.toString(), payload.prompt, payload.originalText);
+  const cachedData = await redis.get(cacheKey);
+  if (cachedData) {
+    console.log('Summary served from Redis cache', JSON.parse(cachedData));
+
+    return JSON.parse(cachedData);
+  }
   const newSummary = await Summary.create(payload);
 
 
@@ -17,7 +26,7 @@ const createSummaryIntoDB = async (payload: ISummary) => {
     content: newSummary.originalText,
     prompt: newSummary.prompt
   });
-
+  await redis.set(cacheKey, JSON.stringify(newSummary), 'EX', 60 * 60 * 24);
   return newSummary;
 };
 

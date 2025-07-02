@@ -25,7 +25,7 @@ router.get(
 
 router.get(
   "/me",
-  auth(USER_ROLE.admin, USER_ROLE.user),
+  auth(USER_ROLE.admin, USER_ROLE.user, USER_ROLE.reviewer, USER_ROLE.editor),
   UserControllers.getUserById
 );
 

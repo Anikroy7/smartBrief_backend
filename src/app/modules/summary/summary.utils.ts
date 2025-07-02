@@ -1,4 +1,5 @@
 import config from "../../config";
+import crypto from 'crypto';
 
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
@@ -21,4 +22,14 @@ export const callOpenAI = async (content: string, prompt: string): Promise<strin
     console.error('OpenAI API call error:', error);
     throw error;
   }
+};
+
+
+
+export const generateCacheKey = (userId: string, prompt: string, originalText: string) => {
+  const hash = crypto
+    .createHash('sha256')
+    .update(`${userId}:${prompt}:${originalText}`)
+    .digest('hex');
+  return `summary:${userId}:${hash}`;
 };

@@ -3,6 +3,10 @@ import cors from "cors";
 import router from "./routes";
 import globalErrorHandler from "./app/middlewares/globalErrorhandler";
 import './app/interfaces/global';
+
+// for corn job
+import "./app/corn/deactivateInactiveUsers";
+
 const app: Application = express();
 
 // Middlewares
