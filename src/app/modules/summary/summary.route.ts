@@ -9,7 +9,7 @@ import { checkUserCredit } from "../../middlewares/checkUserCredit";
 
 const router = express.Router();
 
-router.post('/create', auth(USER_ROLE.user, USER_ROLE.admin), checkUserCredit, upload.single('file'), validateRequest(SummaryValidation.summaryValidationSchema), SummaryControllers.createSummary);
+router.post('/create', auth(USER_ROLE.user, USER_ROLE.admin), checkUserCredit, /* upload.single('file'), */ validateRequest(SummaryValidation.summaryValidationSchema), SummaryControllers.createSummary);
 router.patch('/re-prompt', auth(USER_ROLE.user, USER_ROLE.admin), checkUserCredit, validateRequest(SummaryValidation.summaryValidationSchema), SummaryControllers.rePromptSummary);
 router.get('/all', auth(USER_ROLE.admin, USER_ROLE.editor, USER_ROLE.reviewer), SummaryControllers.getAllSummaries);
 router.get('/my-summaries', auth(USER_ROLE.user,USER_ROLE.admin, USER_ROLE.editor, USER_ROLE.reviewer), SummaryControllers.getMySummaries);

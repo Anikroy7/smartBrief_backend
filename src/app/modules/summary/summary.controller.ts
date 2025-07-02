@@ -8,7 +8,7 @@ import { SummaryServices } from "./summary.service";
 const createSummary = catchAsync(async (req, res) => {
     const summaryData = req.body;
 
-    let originalText = req.body.originalText || '';
+   /*  let originalText = req.body.originalText || '';
 
     if (req.file) {
         const filePath = req.file.path;
@@ -20,7 +20,7 @@ const createSummary = catchAsync(async (req, res) => {
         }
     }
     summaryData.originalText = originalText;
-
+ */
     const result = await SummaryServices.createSummaryIntoDB(summaryData);
     sendResponse(res, {
         statusCode: httpStatus.OK,

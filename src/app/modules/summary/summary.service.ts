@@ -7,7 +7,7 @@ import { generateCacheKey } from "./summary.utils";
 import redis from "../../redis/redisClient";
 
 const createSummaryIntoDB = async (payload: ISummary) => {
-  const cacheKey = generateCacheKey(payload.user.toString(), payload.prompt, payload.originalText);
+  const cacheKey = generateCacheKey(payload?._id?.toString(),payload.user.toString(), payload.prompt, payload.originalText);
   const cachedData = await redis.get(cacheKey);
   if (cachedData) {
     console.log('Summary served from Redis cache', JSON.parse(cachedData));

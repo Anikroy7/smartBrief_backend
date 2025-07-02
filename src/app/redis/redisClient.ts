@@ -1,8 +1,14 @@
 import Redis from 'ioredis';
+import config from '../config';
 
 const redis = new Redis({
-  host: process.env.REDIS_HOST || '127.0.0.1',
-  port: Number(process.env.REDIS_PORT) || 6379,
+  host: config.host,
+  port: config.redisPort,
+  username: config.username,
+  password: config.password,
+  retryStrategy(times) {
+    return Math.min(times * 50, 2000);
+  },
 });
 
 redis.on('connect', () => {

@@ -26,10 +26,10 @@ export const callOpenAI = async (content: string, prompt: string): Promise<strin
 
 
 
-export const generateCacheKey = (userId: string, prompt: string, originalText: string) => {
+export const generateCacheKey = (_id: string, userId: string, prompt: string, originalText: string) => {
   const hash = crypto
     .createHash('sha256')
-    .update(`${userId}:${prompt}:${originalText}`)
+    .update(`${userId}:${prompt}:${originalText}:${_id}`)
     .digest('hex');
   return `summary:${userId}:${hash}`;
 };
