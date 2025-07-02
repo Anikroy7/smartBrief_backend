@@ -30,6 +30,19 @@ const createSummary = catchAsync(async (req, res) => {
     });
 });
 
+
+const rePromptSummary = catchAsync(async (req, res) => {
+
+    const summaryData = req.body;
+    const result = await SummaryServices.rePromptSummaryIntoDB(summaryData);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Summary re-prompt successfully",
+        data: result,
+    });
+});
+
 const getAllSummaries = catchAsync(async (req, res) => {
     const summaries = await SummaryServices.getAllSummariesFromDB();
     sendResponse(res, {
@@ -65,7 +78,6 @@ const getSingleSummary = catchAsync(async (req, res) => {
 const updateSummary = catchAsync(async (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
-    console.log('Update Data: controleler', updateData);
 
     const updated = await SummaryServices.updateSummaryIntoDB( id, updateData);
     sendResponse(res, {
@@ -78,7 +90,6 @@ const updateSummary = catchAsync(async (req, res) => {
 
 const deleteSummary = catchAsync(async (req, res) => {
     const { id } = req.params;
-    const userId = req?.user?.userId as string;
     const deleted = await SummaryServices.deleteSummaryIntoDB(id);
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -96,5 +107,6 @@ export const SummaryControllers = {
     getSingleSummary,
     updateSummary,
     deleteSummary,
-    getMySummaries
+    getMySummaries,
+    rePromptSummary
 };

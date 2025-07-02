@@ -42,7 +42,7 @@ export const processSummaryJob = async (job: Job) => {
       await User.findByIdAndUpdate(updatedSummary.user, {
         $inc: { credits: -1 },
       });
-      console.log('✅ User credit decremented by 1');
+      console.log('User credit decremented by 1');
     }
 
   } catch (err: any) {

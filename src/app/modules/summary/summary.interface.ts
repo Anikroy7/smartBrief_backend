@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 
 export interface ISummary {
+  _id: Types.ObjectId;
   user: Types.ObjectId;
   prompt: string;
   originalText: string;

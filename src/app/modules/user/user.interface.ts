@@ -20,3 +20,8 @@ export interface IUserModel extends Model<IUser> {
     hashedPassword: string,
   ): Promise<boolean>;
 }
+
+export interface IRechargePayload extends Document {
+  userId: string;
+  creditAmount: number;
+};

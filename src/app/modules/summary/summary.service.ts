@@ -21,6 +21,31 @@ const createSummaryIntoDB = async (payload: ISummary) => {
   return newSummary;
 };
 
+
+export const rePromptSummaryIntoDB = async (payload: ISummary) => {
+  if (!payload._id) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Summary ID is required");
+  }
+
+  const { _id, ...updateData } = payload;
+
+  const updated = await Summary.findByIdAndUpdate(_id, updateData, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!updated) {
+    throw new AppError(httpStatus.NOT_FOUND, "Failed to update summary");
+  }
+
+  await summaryQueue.add({
+    summaryId: _id.toString(),
+    content: updated.originalText,
+    prompt: updated.prompt,
+  });
+
+  return updated;
+};
 const getAllSummariesFromDB = async (filter: any = {}) => {
   const summaries = await Summary.find(filter).sort({ createdAt: -1 });
   return summaries;
@@ -39,8 +64,8 @@ const getSingleSummaryFromDB = async (id: string) => {
   return summary;
 };
 
-const updateSummaryIntoDB = async ( id: string, updateData: Partial<ISummary>) => {
-  
+const updateSummaryIntoDB = async (id: string, updateData: Partial<ISummary>) => {
+
   const updated = await Summary.findByIdAndUpdate(id, updateData, {
     new: true,
     runValidators: true,
@@ -67,5 +92,6 @@ export const SummaryServices = {
   getSingleSummaryFromDB,
   updateSummaryIntoDB,
   deleteSummaryIntoDB,
-  getMySummariesFromDB
+  getMySummariesFromDB,
+  rePromptSummaryIntoDB
 };

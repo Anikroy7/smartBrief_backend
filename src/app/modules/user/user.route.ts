@@ -1,7 +1,7 @@
 import express from "express";
 import { UserControllers } from "./user.contoller";
 import validateRequest from "../../middlewares/validateRequest";
-import { createUserValidationSchema } from "./user.validation";
+import { createUserValidationSchema, updateUserValidationSchema } from "./user.validation";
 import auth from "../../middlewares/auth";
 import { USER_ROLE } from "./user.constant";
 
@@ -12,6 +12,10 @@ router.post(
   validateRequest(createUserValidationSchema),
   UserControllers.createUser
 );
+/* 
+router.patch("/recharge-credits",
+  auth(USER_ROLE.admin),
+  UserControllers.rechargeCreditsToUser) */
 
 router.get(
   "/all",
@@ -24,4 +28,16 @@ router.get(
   auth(USER_ROLE.admin, USER_ROLE.user),
   UserControllers.getUserById
 );
+
+
+router.patch(
+  "/update/:id",
+  validateRequest(updateUserValidationSchema),
+  UserControllers.updatedUser
+);
+router.delete(
+  "/delete/:id",
+  UserControllers.deleteUser
+);
+
 export const UsersRoutes = router;
